@@ -26,14 +26,6 @@ type Actress = Person & {
   nationality: Nationality,
 }
 
-// 📌 Milestone 3
-// Crea una funzione getActress che, dato un id, effettua una chiamata a:
-
-// GET / actresses /: id
-// La funzione deve restituire l’oggetto Actress, se esiste, oppure null se non trovato.
-
-// Utilizza un type guard chiamato isActress per assicurarti che la struttura del dato ricevuto sia corretta.
-
 function isActress(obj: unknown): obj is Actress {
   return (
     typeof obj === "object" && obj !== null &&
@@ -78,12 +70,43 @@ async function getActress(id: number): Promise<Actress | null> {
       throw new Error("Dati non validi!");
     }
   } catch (error) {
-    { }
     if (error instanceof Error) {
       console.error("Errore durante la richiesta dei dati:", error);
     } else {
       console.error("Errore:", error);
     }
     return null;
+  }
+}
+
+// 📌 Milestone 4
+// Crea una funzione getAllActresses che chiama:
+
+// GET / actresses
+// La funzione deve restituire un array di oggetti Actress.
+
+// Può essere anche un array vuoto.
+
+async function getAllActresses(): Promise<Actress[]> {
+  try {
+    const response = await fetch(`http://localhost:3333/actresses`);
+    if (!response.ok) {
+      throw new Error(`Errore HTTP: ${response.status}`);
+    }
+
+    const data: unknown = response.json();
+    if (!(data instanceof Array)) {
+      throw new Error("Non è un array!");
+    }
+    const validActress: Actress[] = data.filter(isActress);
+    return validActress;
+
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error("Errore durante la richiesta dei dati:", error);
+    } else {
+      console.error("Errore:", error);
+    }
+    return [];
   }
 }
