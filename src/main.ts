@@ -79,14 +79,6 @@ async function getActress(id: number): Promise<Actress | null> {
   }
 }
 
-// 📌 Milestone 4
-// Crea una funzione getAllActresses che chiama:
-
-// GET / actresses
-// La funzione deve restituire un array di oggetti Actress.
-
-// Può essere anche un array vuoto.
-
 async function getAllActresses(): Promise<Actress[]> {
   try {
     const response = await fetch(`http://localhost:3333/actresses`);
@@ -109,4 +101,19 @@ async function getAllActresses(): Promise<Actress[]> {
     }
     return [];
   }
+}
+
+async function getActresses(ids: number[]): Promise<(Actress | null)[]> {
+  try {
+    const promises = ids.map(id => getActress(id));
+    return await Promise.all(promises);
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error("Errore durante la richiesta dei dati:", error);
+    } else {
+      console.error("Errore:", error);
+    }
+    return [];
+  }
+
 }
